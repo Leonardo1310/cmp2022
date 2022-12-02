@@ -1,48 +1,66 @@
 
 %{
 	#include <stdio.h>
+	#include "header.h"
+	#include "calc.tab.h"
 %}
 
 %option yylineno
 
+D	[0-9]
+L	[a-zA-Z_]
 
-L  [a-zA-Z_]+
-N  [0-9]+
+%% 
+
+[ \t\r\n]				{}
+"olhaogol"				{ return TOK_OLHAOGOL; } // PRINT
+"="					{ return '=';  }
+"*"					{ return '*'; }
+"/"					{ return '/'; }
+"+"					{ return '+'; }
+"-"					{ return '-'; }
+"("					{ return '('; }
+")"					{ return ')'; }
+"^"					{ return '^'; }
+
+[<>!{}]				{ return yytext[0]; }
+"eagora"				{ return TOK_EAGORA; } // e
+"podeissoarnaldo"			{ return TOK_PODEISSOARNALDO; } // ou
+"quemequesobe"				{ return TOK_QUEMEQUESOBE; } //if
+"aicomplica"				{ return TOK_AICOMPLICA; } //else
+"elesosabefazerisso"			{ return TOK_ELESOSABEFAZERISSO; } //while
+
+{D}+				{ yylval.args.intv = atoi(yytext);
+					  return TOK_INTEGER; }
+
+{D}+\.{D}+			{ yylval.args.dblv = atof(yytext);
+					  return TOK_FLOAT; }
+
+{L}({L}|{D})*		{ yylval.args.ident = strndup(yytext, yyleng);
+					  return TOK_IDENT; }
+ /* [a-zA-Z_][a-zA-Z0-9_]* {} */
+
+
+ /* comentário */
+.					{ printf("Invalid caracter: %c.\n", yytext[0]); }
 
 %%
 
- "print"	{printf("TOK_PRINT\n");}
- "="    	{printf("TOK_EQUAL");}
- "*"   	{printf("TOK_MULTIPLY\n");}
- "/"		{printf("TOK_DIVIDE\n");}
- "+"   	{printf("TOK_PLUS\n");}
- "-"   	{printf("TOK_MINUS\n");}
- "("		{printf("TOK_OP\n");}
- ")"		{printf("TOK_CP\n");}
+int yywrap() {
+	return 1;
+}
 
- {N}   	printf("TOK_INTEGER<%s>\n", yytext);}
- {N}\.{N}	printf("TOK_FLOAT<%s>\n", yytext);}
- {L}({L}|{N})*	printf("TOK_LITERAL<%s>\n", yytext);}
- 
- .		printf("Invalid character: %c.\n"), yytext[0]);}
- 
-%%
-
-%{
+int main(int argc, char *argv[]) {
 	
-int main (int argc, char *argv[]) {
-
-	if(argc <= 1){
+	if (argc <= 1) {
 		printf("%s [file]\n", argv[0]);
 		return 1;
 	}
-	
+
 	FILE *f = fopen(argv[1], "r");
-	yyin =f;
-	yylex();
+	yyin = f;
+	yyparse();
 	fclose(f);
-	
 	return 0;
 }
 
-%}

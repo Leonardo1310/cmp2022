@@ -1,0 +1,2 @@
+A = 10 + 20.7^A - (A+B)/B*C + A + B
+print C
