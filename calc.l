@@ -22,6 +22,8 @@ L	[a-zA-Z_]
 "("					{ return '('; }
 ")"					{ return ')'; }
 "^"					{ return '^'; }
+"%"					{ return '%'; }
+
 
 [<>!{}]				{ return yytext[0]; }
 "eagora"				{ return TOK_EAGORA; } // e

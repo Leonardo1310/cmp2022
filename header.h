@@ -10,14 +10,14 @@ enum noh_type {PROGRAM,
 	DIVIDE, OLHAOGOL, POW,
 	PAREN, STMT, QUEMEQUESOBE, EAGORA, PODEISSOARNALDO, AICOMPLICA, ELESOSABEFAZERISSO,
 	LT, GT, LE, GE, EQ, NE,  
-	INTEGER, FLOAT, IDENT, GENERIC};
+	INTEGER, FLOAT, IDENT, GENERIC, TOFLOAT, TOINT, MOD};
 
 static const char *noh_type_names[] = {
-	"program", "Ta tudo igual", "GOOOOOL", "Gol anulado Galvão", "Ja virou goleada",
+	"Apita o árbrito, bola rolando", "Ta tudo igual", "GOOOOOL", "Gol anulado Galvão", "Ja virou goleada",
 	"Dividida forte", "Olha o GOL", "Potencializa o time", "()", "Bora pro jogo",
 	"Quem é que sobe?", "E agora?", "Pode isso Arnaldo?", "Aí complica", "Ele só sabe fazer isso",
 	"<", ">", "<=", ">=", "==", "!=",
-	"int", "float", "ident", "generic"
+	"int", "float", "ident", "generic", "Flutuando pelo campo", "Tá todo mundo inteiro", "Vai sobrar pra quem?"
 };
 
 typedef struct {
@@ -40,9 +40,8 @@ bool simbolo_existe(char *nome);
 void debug();
 
 struct noh {
-	int id;
+	int id, line, childcount;
 	enum noh_type type;
-	int childcount;
 
 	double dblv;
 	int intv;
@@ -59,10 +58,14 @@ typedef void (*visitor_action)(noh **root,
 void check_declared_vars(noh **root,
 	noh *no);
 
+void check_division_by_zero(noh **root, noh *no);
+
 void visitor_leaf_first(noh **root,
 	visitor_action act);
 
-noh *create_noh(enum noh_type, int children);
+void convert_type(noh **root, noh *no);
+
+noh *create_noh(enum noh_type, int children, int line);
 
 void print(noh *root);
 void print_rec(FILE *f, noh *root);

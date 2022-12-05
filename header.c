@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "header.h"
 
-noh *create_noh(enum noh_type nt, int children) {
+noh *create_noh(enum noh_type nt, int children, int line) {
 	static int IDCOUNT = 0;
 	noh *newn = (noh*)calloc(1,
 		sizeof(noh)+
@@ -10,6 +10,7 @@ noh *create_noh(enum noh_type nt, int children) {
 	newn->type = nt;
 	newn->childcount = children;
 	newn->id = IDCOUNT++;
+	newn->line = line;
 	return newn;
 }
 
@@ -75,10 +76,47 @@ void check_declared_vars(noh **root,
 
 		int s = search_symbol(no->name);
 		if (s == -1 || !tsimbolos[s].exists) {
-			printf("%d: Galvão: o %s estava impedido.\n",
-				0, no->name);
+			printf("Galvão: o %s estava impedido.\n", no->name);
 			error_count++;
 		}
+	}
+}
+
+void convert_type(noh **root, noh *no){
+  if(no->type == SUM)
+  {
+      printf("entrou\n");
+      if(no->children[0]->type == INTEGER)
+      {
+          printf("aaaaa\n");
+          noh *aux = no;
+	  noh *aux2 = aux->children[0];
+	  noh *aux3 = create_noh(TOFLOAT, 1, 0);
+	  aux3->children[0] = aux2;
+	  aux->children[0] = aux3;
+	  
+	  error_count++;
+      }
+  }
+  else if((no->type == DIVIDE || no->type == SUM || no->type == MINUS || no->type == MULTI) && no->children[0]->type == FLOAT && no->children[1]->type == INTEGER)
+  {
+	noh *aux = no;
+	noh *aux2 = aux->children[0];
+	noh *aux3 = create_noh(TOINT, 1, 0);
+	aux3->children[0] = aux2;
+	aux->children[0] = aux3;
+	
+	error_count++;
+  }
+}
+
+void check_division_by_zero(noh **root, noh *no) {
+
+	if (no->type == DIVIDE  && ((no->children[1]->type == INTEGER && no->children[1]->intv == 0) || (no->children[1]->type == FLOAT && no->children[1]->dblv == 0)))
+	{
+		printf("Galvão, o número %d deu uma entrada muito forte. Olha essa dividida por 0 fortíssima!", no->children[1]->line);
+
+		error_count++;
 	}
 }
 

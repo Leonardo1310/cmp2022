@@ -1,0 +1,16 @@
+A = 5
+B = 3.2
+C = 12.1
+soma = 0
+
+quemequesobe(A > B eagora A > C){
+		soma = 3.2 + 12.1
+	}
+	aicomplica quemequesobe(B > A eagora B > C){
+		soma = 5 + 12.1
+	}
+	aicomplica quemequesobe(C > A eagora C > B){
+		soma = 3.2 + 5
+	}
+	
+olhaogol soma
