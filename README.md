@@ -6,7 +6,7 @@ O léxico da linguagem é o seguinte:
 
 "olhaogol"           -> Print  
 "eagora"             -> expressão booleana AND  
-"podeissoarnaldo"    -> expressão booleaba OR  
+"podeissoarnaldo"    -> expressão booleana OR  
 "quemequesobe"       -> condicional if  
 "aicomplica"         -> condicional else  
 "elesosabefazerisso" -> laço de repetição while  
